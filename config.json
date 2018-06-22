@@ -1,0 +1,4 @@
+{
+	"DB_URL": "mongodb://localhost/Messenger",
+	"PORT": "8889"
+}
