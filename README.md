@@ -10,6 +10,7 @@
 npm install
 
 # serve with hot reload at localhost:8889
+npm install -g nodemon
 nodemon
 
 
