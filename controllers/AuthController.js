@@ -16,26 +16,30 @@ module.exports = {
 				next(err);
 			} else if (user){
 				var errors = [];
-				if (user.username == req.body.username && user.email == req.body.email){
-					errors.push({
-						field: 'username',
-						message: `User with username ${ req.body.username } is already exists`
-					});
-					errors.push({
-						field: 'email',
-						message: `User with email ${ req.body.email } is already exists`
-					});
-				} else if (user.username == req.body.username){
-					errors.push({
-						field: 'username',
-						message: `User with username ${ req.body.username } is already exists`
-					});
-				} else if (user.email == req.body.email){
-					errors.push({
-						field: 'email',
-						message: `User with email ${ req.body.email } is already exists`
-					});
-				};
+				// if (user.username == req.body.username && user.email == req.body.email){
+				// 	errors.push({
+				// 		field: 'username',
+				// 		message: `User with username ${ req.body.username } is already exists`
+				// 	});
+				// 	errors.push({
+				// 		field: 'email',
+				// 		message: `User with email ${ req.body.email } is already exists`
+				// 	});
+				// } else if (user.username == req.body.username){
+				// 	errors.push({
+				// 		field: 'username',
+				// 		message: `User with username ${ req.body.username } is already exists`
+				// 	});
+				// } else if (user.email == req.body.email){
+				// 	errors.push({
+				// 		field: 'email',
+				// 		message: `User with email ${ req.body.email } is already exists`
+				// 	});
+				// };
+				errors.push({
+					field: 'email or username',
+					message: `User is already exists`
+				});
 				res.status(403);
 				res.json({
 					status: 403,
