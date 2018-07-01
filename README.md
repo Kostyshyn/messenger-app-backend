@@ -1,5 +1,4 @@
 # messenger-app-backend
-# rest-api-client
 
 > A Express.js & MongoDB project
 
