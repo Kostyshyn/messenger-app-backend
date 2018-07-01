@@ -8,24 +8,17 @@ var helmet = require('helmet');
 var compression = require('compression');
 var mongoose = require('mongoose');
 var colors = require('colors');
+var helper = require('./helpers/');
 
 var CONFIG = require('./config');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var api = require('./routes/');
 
 var app = express();
 
-mongoose.connect(CONFIG.DB_URL);
-var db = mongoose.connection;
+// connect DB 
 
-db.on('error', function(err){
-	console.log(colors.red('DataBase connection error:', err.message));
-});
-
-db.once('connected', function(){
-	console.log('DataBase successfully connected to:'.green, CONFIG.DB_URL);
-});
+helper.connectDB(CONFIG.DB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,12 +35,14 @@ app.use('/storage', express.static(path.join(__dirname, 'storage')));
 
 app.use(cors()); // CORS
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  // next(createError(404));
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler
@@ -58,7 +53,13 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
+  if (err.status != 404){
+    console.log(colors.red(err));
+  };
+  res.json({
+    error: err
+  });
 });
 
 module.exports = app;

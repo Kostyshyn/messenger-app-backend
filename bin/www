@@ -12,6 +12,9 @@ var socketIo = require('socket.io');
 var colors = require('colors');
 var os = require('os');
 var ip = require('ip');
+var helper = require('../helpers/');
+
+helper.checkDir('./storage');
 
 /**
  * Get port from environment and store in Express.

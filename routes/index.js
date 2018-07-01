@@ -1,13 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var CONFIG = require('../config/');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+var apiRouter = require(`./api_v${ CONFIG.API_VERSION }`);
 
-router.get('/api', function(req, res, next) {
-  res.json({ msg: 'Hello from Express' });
-});
+router.use('/api', apiRouter);
 
 module.exports = router;
