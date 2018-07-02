@@ -38,11 +38,17 @@ app.use(cors()); // CORS
 app.use('/', api);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  // next(createError(404));
-  var err = new Error('Not Found');
+app.use((req, res) => {
+  const err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  res.status(err.status).json({
+    error: {
+      status: err.status,
+      request_url: req.originalUrl,
+      message: err.message,
+      // stack_trace: err.stack.split(/\n/).map(stackTrace => stackTrace.replace(/\s{2,}/g, ' ').trim()),
+    }
+  });
 });
 
 // error handler
@@ -50,13 +56,8 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   // res.render('error');
-  if (err.status != 404){
-    console.log(colors.red(err));
-  };
   res.json({
     error: err
   });
