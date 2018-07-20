@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+require('module-alias/register');
+
 var app = require('../app');
 var debug = require('debug')('messenger-app-backend:server');
 var http = require('http');

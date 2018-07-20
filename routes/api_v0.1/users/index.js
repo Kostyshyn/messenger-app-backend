@@ -1,16 +1,17 @@
-var express = require('express');
-var router = express.Router();
-var helper = require('../../../helpers/');
+import express from 'express';
+import { protectedRoute } from '@helpers';
+
+const router = express.Router();
 
 router.get('/', (req, res, next) => {
 	res.status(200).json({
 		'title': 'Hello from users route!'
 	});
 });
-router.get('/protected', helper.protected, (req, res, next) => {
+router.get('/protected', protectedRoute, (req, res, next) => {
 	res.status(200).json({
 		'title': 'Hello from protected route!'
 	});
 });
 
-module.exports = router;
+export { router as userRouter };

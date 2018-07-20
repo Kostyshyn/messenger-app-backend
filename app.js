@@ -1,24 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
-var helmet = require('helmet');
-var compression = require('compression');
-var mongoose = require('mongoose');
-var colors = require('colors');
-var helper = require('./helpers/');
+import createError from 'http-errors';
+import express from 'express'
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import mongoose from 'mongoose';
+import colors from 'colors';
+import { connectDB } from '@helpers';
 
-var CONFIG = require('./config');
+import CONFIG from '@config';
 
-var api = require('./routes/');
+import { api } from '@routes';
 
-var app = express();
+const app = express();
 
 // connect DB 
 
-helper.connectDB(CONFIG.DB_URL);
+connectDB(CONFIG.DB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -52,7 +52,7 @@ app.use((req, res) => {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
