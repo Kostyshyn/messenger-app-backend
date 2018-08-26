@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
-import User from '@models/User';
-import CONFIG from '@config';
+import { User } from '@models/User';
 import { isValidPassword, generateToken } from '@helpers';
 import { validationResult } from 'express-validator/check';
 
@@ -24,29 +23,9 @@ const register = function(req, res, next){
 			next(err);
 		} else if (user){
 			const errors = [];
-				// if (user.username == req.body.username && user.email == req.body.email){
-				// 	errors.push({
-				// 		param: 'username',
-				// 		msg: `User with username ${ req.body.username } is already exists`
-				// 	});
-				// 	errors.push({
-				// 		param: 'email',
-				// 		msg: `User with email ${ req.body.email } is already exists`
-				// 	});
-				// } else if (user.username == req.body.username){
-				// 	errors.push({
-				// 		param: 'username',
-				// 		msg: `User with username ${ req.body.username } is already exists`
-				// 	});
-				// } else if (user.email == req.body.email){
-				// 	errors.push({
-				// 		param: 'email',
-				// 		msg: `User with email ${ req.body.email } is already exists`
-				// 	});
-				// };
 				errors.push({
 					location: 'body',
-					param: 'email or username',
+					param: 'email, username',
 					value: '',
 					msg: 'User is already exists'
 				});

@@ -5,12 +5,12 @@ const registerValidator = () => ([
 		check('username')
 			.not().isEmpty().withMessage('Usermame is required'),
 		check('email')
-			.isEmail().withMessage('Username must be an email')
-			.not().isEmpty().withMessage('Email is required'),
+			.not().isEmpty().withMessage('Email is required')
+			.isEmail().withMessage('Invalid value'),
 		check('password')
 			.not().isEmpty().withMessage('Password is required')
-			.isLength({ min: 6 }).withMessage('must be at least 6 chars long')
-			.matches(/\d/).withMessage('must contain a number')
+			.isLength({ min: 6 }).withMessage('Must be at least 6 chars long')
+			.matches(/\d/).withMessage('Must contain a number')
 	]);
 
 const loginValidator = () => ([
@@ -18,8 +18,7 @@ const loginValidator = () => ([
 			.not().isEmpty().withMessage('Usermame is required'),
 		check('password')
 			.not().isEmpty().withMessage('Password is required')
-			.isLength({ min: 6 }).withMessage('must be at least 6 chars long')
-			.matches(/\d/).withMessage('must contain a number')
+			.isLength({ min: 6 }).withMessage('Must be at least 6 chars long')
 	]);
 
 export { registerValidator, loginValidator };

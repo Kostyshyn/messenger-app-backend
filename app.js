@@ -8,9 +8,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import colors from 'colors';
-import { connectDB } from '@helpers';
-
-import CONFIG from '@config';
+import { connectDB } from '@database';
 
 import { api } from '@routes';
 
@@ -18,7 +16,7 @@ const app = express();
 
 // connect DB 
 
-connectDB(CONFIG.DB_URL);
+connectDB(process.env.DB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -55,11 +53,12 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = process.env.MODE === 'development' ? err : {};
   res.status(err.status || 500);
   // res.render('error');
+  console.log(err, process.env.MODE === 'development')
   res.json({
-    error: err
+    error: 'Internal Server Error'
   });
 });
 

@@ -5,11 +5,11 @@
  */
 
 require('module-alias/register');
+require('dotenv/config');
 
 var app = require('../app');
 var debug = require('debug')('messenger-app-backend:server');
 var http = require('http');
-var CONFIG = require('../config');
 var socketIo = require('socket.io');
 var colors = require('colors');
 var os = require('os');
@@ -22,7 +22,7 @@ helper.checkDir('./storage');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || CONFIG.PORT || 8080);
+var port = normalizePort(process.env.PORT || 8080);
 app.set('port', port);
 
 /**

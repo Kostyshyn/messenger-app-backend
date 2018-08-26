@@ -1,10 +1,7 @@
 import fs from 'fs';
 import colors from 'colors';
-import CONFIG from '../config';
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';
 import jwt from 'jsonwebtoken';
-mongoose.Promise = Promise;
 
 
 const checkDir = function(directory){  
@@ -16,26 +13,13 @@ const checkDir = function(directory){
 	}	
 };
 
-const connectDB = function(url){
-	mongoose.connect(url);
-	var db = mongoose.connection;
-
-	db.on('error', function(err){
-		console.log(colors.red('DataBase connection error:', err.message));
-	});
-
-	db.once('connected', function(){
-		console.log('DataBase successfully connected to:'.green, CONFIG.DB_URL);
-	});		
-};
-
 const isValidPassword = function(user, password){
 	return bcrypt.compareSync(password, user.password);
 };
 
 const generateToken = function(payload){
-	var token = jwt.sign(payload, CONFIG.PRIVATE.SECRET_AUTH_KEY, {
-			expiresIn:  CONFIG.PRIVATE.EXPIRES_TOKEN // 86400 // 24 hours
+	var token = jwt.sign(payload, process.env.SECRET_AUTH_KEY, {
+			expiresIn: process.env.EXPIRES_TOKEN // 86400 // 24 hours
 		});
 	return token;
 };
@@ -45,7 +29,7 @@ const generateToken = function(payload){
 const protectedRoute = function(req, res, next) {
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 	if (token) {
-		jwt.verify(token, CONFIG.PRIVATE.SECRET_AUTH_KEY, (err, decoded) => {      
+		jwt.verify(token, process.env.SECRET_AUTH_KEY, (err, decoded) => {      
 			if (err){
 				res.status(401).json({
 					status: 401,
@@ -68,4 +52,4 @@ const protectedRoute = function(req, res, next) {
 	}
 };
 
-export { checkDir, connectDB, isValidPassword, generateToken, protectedRoute }
+export { checkDir, isValidPassword, generateToken, protectedRoute }

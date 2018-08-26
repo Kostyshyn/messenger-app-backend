@@ -1,14 +1,13 @@
-var mongoose = require('mongoose');
-var CONFIG = require('../config/');
-var bcrypt = require('bcrypt-nodejs');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 mongoose.Promise = Promise;
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
 	role: {
 		type: Number,
-		default: CONFIG.PRIVATE.ACCESS.USER
+		default: process.env.PRIVATE_ACCESS_USER
 	},
 	username: {
 		type: String,
@@ -72,11 +71,11 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.pre('save', function(next){
-	var user = this;
-	user.href = this.username.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}|=\-_`~()]/g,"");
+	const user = this;
+	user.href = this.username.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}|=\-_`~()]/g,"").replace(/\s/g, '-');
 	if (user.isModified('password')){
 
-		var hash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
+		const hash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
 		user.password = hash;
 		next(null, user);
 		
@@ -84,6 +83,8 @@ userSchema.pre('save', function(next){
 	return next();
 });
 
-var User = module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export { User }
 
 
