@@ -40,12 +40,16 @@ app.use((req, res) => {
   const err = new Error('Not Found');
   err.status = 404;
   res.status(err.status).json({
-    error: {
-      status: err.status,
-      request_url: req.originalUrl,
-      message: err.message,
-      // stack_trace: err.stack.split(/\n/).map(stackTrace => stackTrace.replace(/\s{2,}/g, ' ').trim()),
-    }
+    status: err.status,
+    success: false, 
+    errors: [
+      {
+        param: 'url',
+        value: req.originalUrl,
+        msg: err.message
+        // stack_trace: err.stack.split(/\n/).map(stackTrace => stackTrace.replace(/\s{2,}/g, ' ').trim()),
+      }
+    ]
   });
 });
 

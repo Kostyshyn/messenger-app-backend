@@ -146,4 +146,39 @@ describe('Auth tests', (done) => {
 
 
 	});
+
+	describe('Protected routes', (done) => {
+
+	    it('Should return an error if token is invalid', (done) => {
+	        chai.request('http://localhost:8889/api')
+	            .get('/users/protected')
+	            .set('x-access-token', 'invalid token')
+	            .end((err, res) => {
+	                res.should.have.status(403);
+	                res.body.should.be.a('object');
+	                res.body.should.have.property('errors');
+	                res.body.errors.should.be.a('array');
+	                res.body.errors[0].should.be.a('object');
+	                res.body.errors[0].should.have.property('msg');
+	                res.body.errors[0].msg.should.be.a('string').eql('token verification failed');
+	              	done();
+	            });
+	    });
+
+	    it('Should return an error if no token', (done) => {
+	        chai.request('http://localhost:8889/api')
+	            .get('/users/protected')
+	            .end((err, res) => {
+	                res.should.have.status(401);
+	                res.body.should.be.a('object');
+	                res.body.should.have.property('errors');
+	                res.body.errors.should.be.a('array');
+	                res.body.errors[0].should.be.a('object');
+	                res.body.errors[0].should.have.property('msg');
+	                res.body.errors[0].msg.should.be.a('string').eql('no token');
+	              	done();
+	            });
+	    });
+
+	});
 });

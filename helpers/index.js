@@ -31,10 +31,16 @@ const protectedRoute = function(req, res, next) {
 	if (token) {
 		jwt.verify(token, process.env.SECRET_AUTH_KEY, (err, decoded) => {      
 			if (err){
-				res.status(401).json({
-					status: 401,
+				res.status(403).json({
+					status: 403,
 					success: false, 
-					message: 'token verification failed' 
+					errors: [
+						{
+							msg: 'token verification failed',
+							param: 'token',
+							value: token
+						}
+					] 
 				});    
 			} else {
 		       	// if everything is good, save to request for use in other routes
@@ -44,10 +50,16 @@ const protectedRoute = function(req, res, next) {
 		       }
 		    });
 	} else {
-		res.status(403).json({
-			status: 403,
+		res.status(401).json({
+			status: 401,
 			success: false, 
-			message: 'no token' 
+			errors: [
+				{
+					msg: 'no token',
+					param: 'token',
+					value: ''
+				}
+			] 
 		});
 	}
 };
