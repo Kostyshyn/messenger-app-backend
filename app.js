@@ -8,7 +8,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import colors from 'colors';
-import { connectDB } from '@database';
+import database from '@database';
+import { protectedRoute } from '@helpers';
 
 import { api } from '@routes';
 
@@ -16,7 +17,7 @@ const app = express();
 
 // connect DB 
 
-connectDB(process.env.DB_URL);
+database.connect(process.env.DB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/storage', express.static(path.join(__dirname, 'storage')));
+app.use('/storage', protectedRoute, express.static(path.join(__dirname, 'storage')));
 
 app.use(cors()); // CORS
 

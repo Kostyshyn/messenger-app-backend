@@ -1,21 +1,78 @@
 import mongoose from 'mongoose';
 import colors from 'colors';
+import empty from 'empty-folder';
+import { User } from '../models/User';
 mongoose.Promise = Promise;
 
-const connectDB = function(url){
-	mongoose.connect(process.env.DB_HOST + url);
-	const db = mongoose.connection;
+class DataBase {
+	constructor(){
+		this._connection = null;
+		// this._connect();
+	}
 
-	db.on('error', err => {
-		if (process.env.MODE === 'development'){
-			console.log(colors.red('DataBase connection error:', err.message));
+	connect(url, cb){
+		if (!this._connection){
+			const self = this;
+			mongoose.connect(process.env.DB_HOST + url).then(res => {
+				self._connection = res.connection;
+				self.drop(() => {
+					if (process.env.MODE !== 'test'){
+						self.seed();
+						console.log('DataBase successfully connected to:'.green, process.env.DB_URL);	
+					}
+					if (typeof cb == 'function'){
+						cb();
+					}
+				});
+			}).catch(err => {
+		 		if (process.env.MODE === 'development'){
+		 			console.log(colors.red('DataBase connection error:', err.message));
+		 		}
+			});
 		}
-		
-	});
+	}
 
-	db.once('connected', () => {
-		console.log('DataBase successfully connected to:'.green, process.env.DB_URL);
-	});		
+	drop(cb){
+		if (this._connection && process.env.MODE !== 'production'){
+			this._connection.db.dropDatabase(() => {
+				empty('./storage', false, (err) => {
+					if (typeof cb == 'function'){
+						cb();
+					}
+				});
+			});
+		}
+	}
+
+	seed(cb){
+		if (this._connection && process.env.MODE !== 'production'){
+			const seeds = [
+				new User({
+					username: 'admin',
+					email: 'admin@admin.com',
+					password: 'admin_admin',
+					role: process.env.PRIVATE_ACCESS_ADMIN
+				}),
+				new User({
+					username: 'root',
+					email: 'root@root.com',
+					password: 'root_root'					
+				})
+			];
+
+			let done = 0;
+
+			for (let i = 0; i < seeds.length; i++){
+				seeds[i].save((err) => {
+					done++;
+					if (done == seeds.length && typeof cb == 'function'){
+						cb();
+					}
+				});
+			}
+		}
+	}
+
 };
 
-export { connectDB }
+export default new DataBase();

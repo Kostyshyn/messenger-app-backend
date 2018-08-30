@@ -1,7 +1,7 @@
 require('dotenv/config');
 require('module-alias/register');
 
-process.env.MODE = 'test';
+ process.env.MODE = 'test';
 
 const assert = require('assert');
 const expect = require('chai').expect;
@@ -12,21 +12,38 @@ const faker = require('faker');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const async = require('async');
+// const faker = require('faker');
 
 chai.use(chaiHttp);
 
-
-import { User } from '../models/User';
+// import { User } from '../models/User';
+import database from '../database';
 
 describe('Auth tests', (done) => {
+
+	before(done => {
+		database.connect(process.env.DB_URL, done);
+	});
+
+	beforeEach(done => {
+		database.drop(done);
+	});
+
+	afterEach(done => {
+		database.drop(done);
+	});
+
+	after(done => {
+		database.seed(done);
+	});
 
  	describe('Register', (done) => {
  
  	    it('Should register a user', (done) => {
  			const user = {
- 				username: faker.name.findName(),
- 				email: faker.internet.email(),
- 				password: faker.internet.password()
+ 				username: 'test',
+ 				email: 'test@test.com',
+ 				password: '123456'
  			};
  	        chai.request('http://localhost:8889/api')
  	            .post('/register')
@@ -67,9 +84,9 @@ describe('Auth tests', (done) => {
 	    it('Should login a user', (done) => {
 
 	    	const userSchema = {
-				username: faker.name.findName(),
-				email: faker.internet.email(),
-				password: faker.internet.password()
+ 				username: 'test',
+ 				email: 'test@test.com',
+ 				password: '123456'
 			};
 
 	    	async.waterfall([
