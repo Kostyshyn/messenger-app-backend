@@ -42,6 +42,10 @@ const userSchema = mongoose.Schema({
 		unique: true,
 		trim: true,
 	},
+	private: {
+		type: Boolean,
+		default: false	
+	},
 	// posts: [{
 	// 	type: Schema.ObjectId,
 	// 	ref: 'Post'
@@ -63,25 +67,25 @@ const userSchema = mongoose.Schema({
 	last_seen: {
 		type: Date,
 		default: Date.now		
-	},
-	created: {
-		type: Date,
-		default: Date.now
 	}
+}, {
+  	timestamps: true
 });
 
 userSchema.pre('save', function(next){
 	const user = this;
-	user.href = this.username.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}|=\-_`~()]/g,"").replace(/\s/g, '-');
-	if (user.isModified('password')){
+
+	if (user.isModified('password') || user.isModified('username')){
 
 		const hash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
 		user.password = hash;
+		user.href = user.username.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}|=\-_`~()]/g,"").replace(/\s/g, '-');
 		next(null, user);
 		
 	} 
 	return next();
 });
+
 
 const User = mongoose.model('User', userSchema);
 
