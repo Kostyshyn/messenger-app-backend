@@ -9,6 +9,8 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import colors from 'colors';
 import database from '@database';
+import redis from '@redis';
+import events from '@events';
 import { protectedRoute } from '@helpers';
 
 import { api } from '@routes';
@@ -18,6 +20,7 @@ const app = express();
 // connect DB 
 
 database.connect(process.env.DB_URL);
+redis.connect();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
