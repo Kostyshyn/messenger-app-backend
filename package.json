@@ -3,19 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon --exec babel-node ./bin/www",
+    "dev": "nodemon --exec babel-node ./src/bin/www.js",
+    "build": "babel src -d dist",
+    "serve": "node ./dist/bin/www.js",
     "test": "mocha --timeout 15000 --require babel-register --reporter spec || exit 0"
-  },
-  "_moduleAliases": {
-    "@root": ".",
-    "@controllers": "controllers",
-    "@validators": "validators",
-    "@models": "models",
-    "@routes": "routes",
-    "@helpers": "helpers",
-    "@database": "database",
-    "@redis": "redis",
-    "@events": "events"
   },
   "dependencies": {
     "async": "^2.6.1",

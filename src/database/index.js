@@ -18,7 +18,7 @@ class DataBase {
 				self.drop(() => {
 					if (process.env.MODE !== 'test'){
 						self.seed();
-						console.log('DataBase successfully connected to:'.green, process.env.DB_URL);	
+						console.log('DataBase successfully connected to:'.green, process.env.DB_DATABASE);	
 					}
 					if (typeof cb == 'function'){
 						cb();

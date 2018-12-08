@@ -4,8 +4,22 @@
  * Module dependencies.
  */
 
-require('module-alias/register');
 require('dotenv/config');
+
+var moduleAlias = require('module-alias');
+var path = require('path');
+
+moduleAlias.addAliases({
+  "@root": path.resolve(__dirname, "../"),
+  "@controllers": path.resolve(__dirname, "../controllers"),
+  "@validators": path.resolve(__dirname, "../validators"),
+  "@models": path.resolve(__dirname, "../models"),
+  "@routes": path.resolve(__dirname, "../routes"),
+  "@helpers": path.resolve(__dirname, "../helpers"),
+  "@database": path.resolve(__dirname, "../database"),
+  "@redis": path.resolve(__dirname, "../redis"),
+  "@events": path.resolve(__dirname, "../events")
+});
 
 var app = require('../app');
 var debug = require('debug')('messenger-app-backend:server');
@@ -16,7 +30,7 @@ var os = require('os');
 var ip = require('ip');
 var helper = require('../helpers/');
 
-helper.checkDir('./storage');
+helper.checkDir('../storage');
 
 /**
  * Get port from environment and store in Express.
