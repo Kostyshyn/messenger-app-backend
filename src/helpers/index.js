@@ -19,7 +19,7 @@ const isValidPassword = function(user, password){
 
 const generateToken = function(payload){
 	var token = jwt.sign(payload, process.env.SECRET_AUTH_KEY, {
-			expiresIn: process.env.EXPIRES_TOKEN // 86400 // 24 hours
+			expiresIn: parseInt(process.env.EXPIRES_TOKEN) // 86400 // 24 hours
 		});
 	return token;
 };

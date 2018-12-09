@@ -48,10 +48,16 @@ const register = function(req, res, next){
 						success: true, 
 						user: {
 							username: user.username,
+							email: user.email,
 							href: user.href,
 							profile_img: user.profile_img,
 							role: user.role,
-							id: user._id
+				 			followers: user.followers,
+				 			follows: user.follows,
+				 			private: user.private,
+							id: user._id,
+							updated: user.updatedAt,
+							created: user.createdAt	
 						},
 						token: token
 					});
@@ -115,10 +121,16 @@ const login = function(req, res, next){
 				success: true,
 				user: {
 					username: user.username,
+					email: user.email,
 					href: user.href,
 					profile_img: user.profile_img,
 					role: user.role,
-					id: user._id					
+				 	followers: user.followers,
+				 	follows: user.follows,
+				 	private: user.private,
+					id: user._id,
+					updated: user.updatedAt,
+					created: user.createdAt					
 				},
 				token: token
 			});			
