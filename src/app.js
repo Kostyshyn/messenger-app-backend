@@ -19,7 +19,7 @@ const app = express();
 
 // connect DB 
 
-database.connect(process.env.DB_URL);
+database.connect(process.env.DB_DATABASE);
 redis.connect();
 
 // view engine setup

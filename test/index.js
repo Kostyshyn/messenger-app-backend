@@ -17,7 +17,7 @@ const async = require('async');
 chai.use(chaiHttp);
 
 // import { User } from '../models/User';
-import database from '../database';
+import database from '../dist/database';
 
 describe('Test', (done) => {
 

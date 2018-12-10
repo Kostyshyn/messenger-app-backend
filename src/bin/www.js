@@ -4,8 +4,22 @@
  * Module dependencies.
  */
 
-require('module-alias/register');
 require('dotenv/config');
+
+var moduleAlias = require('module-alias');
+var path = require('path');
+
+moduleAlias.addAliases({
+  "@root": path.resolve(__dirname, "../"),
+  "@controllers": path.resolve(__dirname, "../controllers"),
+  "@validators": path.resolve(__dirname, "../validators"),
+  "@models": path.resolve(__dirname, "../models"),
+  "@routes": path.resolve(__dirname, "../routes"),
+  "@helpers": path.resolve(__dirname, "../helpers"),
+  "@database": path.resolve(__dirname, "../database"),
+  "@redis": path.resolve(__dirname, "../redis"),
+  "@events": path.resolve(__dirname, "../events")
+});
 
 var app = require('../app');
 var debug = require('debug')('messenger-app-backend:server');
@@ -15,8 +29,9 @@ var colors = require('colors');
 var os = require('os');
 var ip = require('ip');
 var helper = require('../helpers/');
+var cluster =  require('cluster');
 
-helper.checkDir('./storage');
+helper.checkDir('../storage');
 
 /**
  * Get port from environment and store in Express.
@@ -29,19 +44,29 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-var io = socketIo.listen(server);
-require('../socket')(io, null);
+if (cluster.isMaster) {
+  var cpuCount = os.cpus().length;
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+  // Create a worker for each CPU
+  for (var i = 0; i < cpuCount; i += 1) {
+    cluster.fork();
+  }
+} else {
+  var server = http.createServer(app);
+  var io = socketIo.listen(server);
+  require('../socket')(io, null);
 
-server.listen(port, function(){
-  console.log('Server listenning on:'.green, ip.address() + ':' + port);
-});
-server.on('error', onError);
-server.on('listening', onListening);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(port, function(){
+    console.log('Server listenning on:'.green, ip.address() + ':' + port);
+  });
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
+
 
 /**
  * Normalize a port into a number, string, or false.
