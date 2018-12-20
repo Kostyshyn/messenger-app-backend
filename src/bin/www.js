@@ -18,7 +18,8 @@ moduleAlias.addAliases({
   "@helpers": path.resolve(__dirname, "../helpers"),
   "@database": path.resolve(__dirname, "../database"),
   "@redis": path.resolve(__dirname, "../redis"),
-  "@events": path.resolve(__dirname, "../events")
+  "@events": path.resolve(__dirname, "../events"),
+  "@mailer": path.resolve(__dirname, "../mailer")
 });
 
 var app = require('../app');
