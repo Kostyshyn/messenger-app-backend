@@ -52,9 +52,6 @@ const register = function(req, res, next){
 							href: user.href,
 							profile_img: user.profile_img,
 							role: user.role,
-				 			followers: user.followers,
-				 			follows: user.follows,
-				 			private: user.private,
 							id: user._id,
 							updated: user.updatedAt,
 							created: user.createdAt	
@@ -125,9 +122,6 @@ const login = function(req, res, next){
 					href: user.href,
 					profile_img: user.profile_img,
 					role: user.role,
-				 	followers: user.followers,
-				 	follows: user.follows,
-				 	private: user.private,
 					id: user._id,
 					updated: user.updatedAt,
 					created: user.createdAt					
@@ -136,6 +130,18 @@ const login = function(req, res, next){
 			});			
 		}
 	});
+};
+
+const verification = function(req, res, next){
+
+};
+
+const forgotPassword = function(req, res, next){
+
+};
+
+const resetPassword = function(req, res, next){
+
 };
 
 export { register, login };

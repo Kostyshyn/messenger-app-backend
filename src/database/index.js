@@ -15,15 +15,12 @@ class DataBase {
 			const self = this;
 			mongoose.connect(process.env.DB_HOST + url).then(res => {
 				self._connection = res.connection;
-				self.drop(() => {
-					if (process.env.MODE !== 'test'){
-						self.seed();
-						console.log('DataBase successfully connected to:'.green, process.env.DB_DATABASE);	
-					}
-					if (typeof cb == 'function'){
-						cb();
-					}
-				});
+				console.log('DataBase successfully connected to:'.green, 
+					process.env.DB_DATABASE, 
+					'--- process: ' + process.pid);
+				if (typeof cb == 'function'){
+					cb();
+				};
 			}).catch(err => {
 		 		if (process.env.MODE === 'development'){
 		 			console.log(colors.red('DataBase connection error:', err.message));
@@ -35,7 +32,7 @@ class DataBase {
 	drop(cb){
 		if (this._connection && process.env.MODE !== 'production'){
 			this._connection.db.dropDatabase(() => {
-				empty('./storage', false, (err) => {
+				empty('../storage', false, (err) => {
 					if (typeof cb == 'function'){
 						cb();
 					}

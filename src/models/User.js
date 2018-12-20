@@ -25,13 +25,19 @@ const userSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	info: {
-		type: String,
-		default: ''
+	reset_token: {
+		type: String
+	},
+	verification_token: {
+		type: String
 	},
 	profile_img: {
 		type: String,
 		default: 'public_images/128_profile_placeholder.png'
+	},
+	verified: {
+		type: Boolean,
+		default: false		
 	},
 	online: {
 		type: Boolean,
@@ -42,28 +48,6 @@ const userSchema = mongoose.Schema({
 		unique: true,
 		trim: true,
 	},
-	private: {
-		type: Boolean,
-		default: false	
-	},
-	// posts: [{
-	// 	type: Schema.ObjectId,
-	// 	ref: 'Post'
-	// }],
-	// likes: [{
-	// 	type: Schema.ObjectId,
-	// 	ref: 'Like'
-	// }],
-	// comments: [{
-	// 	type: Schema.ObjectId,
-	// 	ref: 'Comment'
-	// }],
-	followers: [{
-		id: Schema.ObjectId
-	}],
-	follows: [{
-		id: Schema.ObjectId
-	}],
 	last_seen: {
 		type: Date,
 		default: Date.now		

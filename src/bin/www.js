@@ -18,7 +18,7 @@ moduleAlias.addAliases({
   "@helpers": path.resolve(__dirname, "../helpers"),
   "@database": path.resolve(__dirname, "../database"),
   "@redis": path.resolve(__dirname, "../redis"),
-  "@events": path.resolve(__dirname, "../events")
+  "@events": path.resolve(__dirname, "../events"),
   "@events": path.resolve(__dirname, "../events"),
   "@mailer": path.resolve(__dirname, "../mailer")
 });
@@ -49,6 +49,10 @@ app.set('port', port);
 if (cluster.isMaster) {
   var cpuCount = os.cpus().length;
 
+  if (process.env.MODE === 'development'){
+    console.log(cpuCount)
+  }
+
   // Create a worker for each CPU
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
@@ -63,7 +67,7 @@ if (cluster.isMaster) {
    */
 
   server.listen(port, function(){
-    console.log('Server listenning on:'.green, ip.address() + ':' + port);
+    console.log('Server listenning on:'.green, ip.address() + ':' + port, '--- process: ' + process.pid);
   });
   server.on('error', onError);
   server.on('listening', onListening);
