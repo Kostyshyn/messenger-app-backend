@@ -13,6 +13,10 @@ import redis from '@redis';
 import events from '@events';
 import { protectedRoute } from '@helpers';
 
+import { send } from '@mailer'
+
+// send();
+
 import { api } from '@routes';
 
 const app = express();

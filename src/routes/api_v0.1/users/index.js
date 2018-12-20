@@ -15,7 +15,7 @@ const router = express.Router();
 // 	});
 // });
 
-router.get('/:href', protectedRoute, getUser);
+router.get('/:href', getUser);
 router.put('/', protectedRoute, updateUser);
 router.delete('/', protectedRoute, deleteUser);
 

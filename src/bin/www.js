@@ -19,6 +19,8 @@ moduleAlias.addAliases({
   "@database": path.resolve(__dirname, "../database"),
   "@redis": path.resolve(__dirname, "../redis"),
   "@events": path.resolve(__dirname, "../events")
+  "@events": path.resolve(__dirname, "../events"),
+  "@mailer": path.resolve(__dirname, "../mailer")
 });
 
 var app = require('../app');
@@ -29,6 +31,7 @@ var colors = require('colors');
 var os = require('os');
 var ip = require('ip');
 var helper = require('../helpers/');
+var cluster =  require('cluster');
 
 helper.checkDir('../storage');
 
@@ -43,19 +46,29 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-var io = socketIo.listen(server);
-require('../socket')(io, null);
+if (cluster.isMaster) {
+  var cpuCount = os.cpus().length;
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+  // Create a worker for each CPU
+  for (var i = 0; i < cpuCount; i += 1) {
+    cluster.fork();
+  }
+} else {
+  var server = http.createServer(app);
+  var io = socketIo.listen(server);
+  require('../socket')(io, null);
 
-server.listen(port, function(){
-  console.log('Server listenning on:'.green, ip.address() + ':' + port);
-});
-server.on('error', onError);
-server.on('listening', onListening);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(port, function(){
+    console.log('Server listenning on:'.green, ip.address() + ':' + port);
+  });
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
+
 
 /**
  * Normalize a port into a number, string, or false.
