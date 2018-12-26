@@ -15,9 +15,6 @@ const getUser = function(req, res, next){
 				 	href: user.href,
 				 	profile_img: user.profile_img,
 				 	role: user.role,
-				 	followers: user.followers,
-				 	follows: user.follows,
-				 	private: user.private,
 				 	id: user._id
 				}
 			});
@@ -38,7 +35,7 @@ const updateUser = function(req, res, next){
 	User.findById(req.decoded.id).then(user => {
 		if (user){
 
-			const whiteList = ['username', 'email', 'password', 'private', 'profile_img'];
+			const whiteList = ['username', 'email', 'password', 'profile_img'];
 			const updated = {};
 
 			for (let i = 0; i < whiteList.length; i++){
@@ -59,7 +56,6 @@ const updateUser = function(req, res, next){
 						href: user.href,
 						profile_img: user.profile_img,
 						role: user.role,
-						private: user.private,
 						id: user._id,
 						updated: user.updatedAt,
 						created: user.createdAt	

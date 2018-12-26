@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt-nodejs';
 import { User } from '@models/User';
 import { isValidPassword, generateToken } from '@helpers';
 import { validationResult } from 'express-validator/check';
+import { sendConfirmation } from '@mailer';
 
 const register = function(req, res, next){
 	const e = validationResult(req);
@@ -41,6 +42,12 @@ const register = function(req, res, next){
 					password: req.body.password,
 					email: req.body.email
 				}).then(user => {
+					sendConfirmation(user).then(res => {
+					  
+					}).catch(err => {
+					  next(err)
+					});
+
 					const token = generateToken({ id: user._id });
 					res.status(201);
 					res.json({
@@ -52,9 +59,6 @@ const register = function(req, res, next){
 							href: user.href,
 							profile_img: user.profile_img,
 							role: user.role,
-				 			followers: user.followers,
-				 			follows: user.follows,
-				 			private: user.private,
 							id: user._id,
 							updated: user.updatedAt,
 							created: user.createdAt	
@@ -125,9 +129,6 @@ const login = function(req, res, next){
 					href: user.href,
 					profile_img: user.profile_img,
 					role: user.role,
-				 	followers: user.followers,
-				 	follows: user.follows,
-				 	private: user.private,
 					id: user._id,
 					updated: user.updatedAt,
 					created: user.createdAt					
@@ -138,6 +139,36 @@ const login = function(req, res, next){
 	});
 };
 
-export { register, login };
+const forgotPassword = function(req, res, next){
+
+};
+
+const confirmation = function(req, res, next){
+	User.findById(req.decoded.id).then(user => {
+		if (user){
+			sendConfirmation(user).then(response => {
+				res.status(200);
+				res.json({
+					status: 200,
+					success: true, 
+					msg: response
+				});				
+			}).catch(err => {
+				next(err)
+			});
+		} else {
+			res.status(404);
+			res.json({
+				status: 404,
+				success: false, 
+				user: null
+			});	
+		}
+	}).catch(err => {
+		next(err);
+	});
+};
+
+export { register, login, confirmation };
 
 

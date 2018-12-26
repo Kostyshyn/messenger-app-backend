@@ -11,7 +11,9 @@ class Redis {
 			this._connection = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 
 			this._connection.on('connect', () => {
-			    console.log('Redis client connected to:'.green, `${ process.env.REDIS_HOST }:${ process.env.REDIS_PORT }`);
+			    console.log('Redis client connected to:'.green, 
+			    	`${ process.env.REDIS_HOST }:${ process.env.REDIS_PORT }`,
+			    	'--- process: ' + process.pid);
 			});
 
 			this._connection.on('error', err => {

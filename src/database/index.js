@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import colors from 'colors';
 import empty from 'empty-folder';
+import path from 'path';
 import { User } from '../models/User';
 mongoose.Promise = Promise;
 
@@ -15,27 +16,40 @@ class DataBase {
 			const self = this;
 			mongoose.connect(process.env.DB_HOST + url).then(res => {
 				self._connection = res.connection;
-				self.drop(() => {
-					if (process.env.MODE !== 'test'){
-						self.seed();
-						console.log('DataBase successfully connected to:'.green, process.env.DB_DATABASE);	
-					}
+		 		if (process.env.MODE === 'development'){
+					self.drop(() => {
+						if (process.env.MODE !== 'test'){
+							self.seed();
+							console.log('DataBase successfully connected to:'.green, 
+								process.env.DB_DATABASE, 
+								'--- process: ' + process.pid);	
+						}
+						if (typeof cb == 'function'){
+							cb();
+						}
+					});
+		 		} else {
+					console.log('DataBase successfully connected to:'.green, 
+						process.env.DB_DATABASE, 
+						'--- process: ' + process.pid);	
 					if (typeof cb == 'function'){
 						cb();
 					}
-				});
+		 		}				
+
 			}).catch(err => {
 		 		if (process.env.MODE === 'development'){
 		 			console.log(colors.red('DataBase connection error:', err.message));
 		 		}
-			});
+			});			
 		}
 	}
 
 	drop(cb){
 		if (this._connection && process.env.MODE !== 'production'){
 			this._connection.db.dropDatabase(() => {
-				empty('./storage', false, (err) => {
+
+				empty(path.resolve(__dirname, '../../storage'), false, (err) => {
 					if (typeof cb == 'function'){
 						cb();
 					}
@@ -51,12 +65,14 @@ class DataBase {
 					username: 'admin',
 					email: 'admin@admin.com',
 					password: 'admin_admin',
-					role: process.env.PRIVATE_ACCESS_ADMIN
+					role: process.env.PRIVATE_ACCESS_ADMIN,
+					verified: true
 				}),
 				new User({
 					username: 'root',
 					email: 'root@root.com',
-					password: 'root_root'					
+					password: 'root_root',
+					verified: true					
 				})
 			];
 

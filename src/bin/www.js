@@ -18,7 +18,9 @@ moduleAlias.addAliases({
   "@helpers": path.resolve(__dirname, "../helpers"),
   "@database": path.resolve(__dirname, "../database"),
   "@redis": path.resolve(__dirname, "../redis"),
-  "@events": path.resolve(__dirname, "../events")
+  "@events": path.resolve(__dirname, "../events"),
+  "@mailer": path.resolve(__dirname, "../mailer"),
+  "@views": path.resolve(__dirname, "../views")
 });
 
 var app = require('../app');
@@ -29,8 +31,9 @@ var colors = require('colors');
 var os = require('os');
 var ip = require('ip');
 var helper = require('../helpers/');
+var cluster =  require('cluster');
 
-helper.checkDir('../storage');
+helper.checkDir(path.resolve(__dirname, '../../storage'));
 
 /**
  * Get port from environment and store in Express.
@@ -43,19 +46,46 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-var io = socketIo.listen(server);
-require('../socket')(io, null);
+if (process.env.MODE === 'development'){
+  var server = http.createServer(app);
+  var io = socketIo.listen(server);
+  require('../socket')(io, null);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
 
-server.listen(port, function(){
-  console.log('Server listenning on:'.green, ip.address() + ':' + port);
-});
-server.on('error', onError);
-server.on('listening', onListening);
+  server.listen(port, function(){
+    console.log('Server listenning on:'.green, ip.address() + ':' + port, '--- process: ' + process.pid);
+  });
+  server.on('error', onError);
+  server.on('listening', onListening);  
+} else {
+  if (cluster.isMaster) {
+    var cpuCount = os.cpus().length;
+
+    // Create a worker for each CPU
+    for (var i = 0; i < cpuCount; i += 1) {
+      cluster.fork();
+    }
+  } else {
+    var server = http.createServer(app);
+    var io = socketIo.listen(server);
+    require('../socket')(io, null);
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+
+    server.listen(port, function(){
+      console.log('Server listenning on:'.green, ip.address() + ':' + port, '--- process: ' + process.pid);
+    });
+    server.on('error', onError);
+    server.on('listening', onListening);
+  }
+}
+
+
 
 /**
  * Normalize a port into a number, string, or false.
