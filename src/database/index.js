@@ -15,17 +15,32 @@ class DataBase {
 			const self = this;
 			mongoose.connect(process.env.DB_HOST + url).then(res => {
 				self._connection = res.connection;
-				console.log('DataBase successfully connected to:'.green, 
-					process.env.DB_DATABASE, 
-					'--- process: ' + process.pid);
-				if (typeof cb == 'function'){
-					cb();
-				};
+		 		if (process.env.MODE === 'development'){
+					self.drop(() => {
+						if (process.env.MODE !== 'test'){
+							self.seed();
+							console.log('DataBase successfully connected to:'.green, 
+								process.env.DB_DATABASE, 
+								'--- process: ' + process.pid);	
+						}
+						if (typeof cb == 'function'){
+							cb();
+						}
+					});
+		 		} else {
+					console.log('DataBase successfully connected to:'.green, 
+						process.env.DB_DATABASE, 
+						'--- process: ' + process.pid);	
+					if (typeof cb == 'function'){
+						cb();
+					}
+		 		}				
+
 			}).catch(err => {
 		 		if (process.env.MODE === 'development'){
 		 			console.log(colors.red('DataBase connection error:', err.message));
 		 		}
-			});
+			});			
 		}
 	}
 

@@ -19,8 +19,8 @@ moduleAlias.addAliases({
   "@database": path.resolve(__dirname, "../database"),
   "@redis": path.resolve(__dirname, "../redis"),
   "@events": path.resolve(__dirname, "../events"),
-  "@events": path.resolve(__dirname, "../events"),
-  "@mailer": path.resolve(__dirname, "../mailer")
+  "@mailer": path.resolve(__dirname, "../mailer"),
+  "@views": path.resolve(__dirname, "../views")
 });
 
 var app = require('../app');
@@ -46,18 +46,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-if (cluster.isMaster) {
-  var cpuCount = os.cpus().length;
-
-  if (process.env.MODE === 'development'){
-    console.log(cpuCount)
-  }
-
-  // Create a worker for each CPU
-  for (var i = 0; i < cpuCount; i += 1) {
-    cluster.fork();
-  }
-} else {
+if (process.env.MODE === 'development'){
   var server = http.createServer(app);
   var io = socketIo.listen(server);
   require('../socket')(io, null);
@@ -70,8 +59,32 @@ if (cluster.isMaster) {
     console.log('Server listenning on:'.green, ip.address() + ':' + port, '--- process: ' + process.pid);
   });
   server.on('error', onError);
-  server.on('listening', onListening);
+  server.on('listening', onListening);  
+} else {
+  if (cluster.isMaster) {
+    var cpuCount = os.cpus().length;
+
+    // Create a worker for each CPU
+    for (var i = 0; i < cpuCount; i += 1) {
+      cluster.fork();
+    }
+  } else {
+    var server = http.createServer(app);
+    var io = socketIo.listen(server);
+    require('../socket')(io, null);
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+
+    server.listen(port, function(){
+      console.log('Server listenning on:'.green, ip.address() + ':' + port, '--- process: ' + process.pid);
+    });
+    server.on('error', onError);
+    server.on('listening', onListening);
+  }
 }
+
 
 
 /**
