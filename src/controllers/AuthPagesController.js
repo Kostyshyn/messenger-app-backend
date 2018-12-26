@@ -18,7 +18,6 @@ const confirmation = function(req, res, next){
 					] 
 				});    
 			} else {
-				console.log(decoded.email);
 
 				User.findOne({
 					email: decoded.email
@@ -31,12 +30,17 @@ const confirmation = function(req, res, next){
 							next(err);
 						});	
 					} else {
-						res.status(404);
-						res.json({
-							status: 404,
+						res.status(403).json({
+							status: 403,
 							success: false, 
-							user: null
-						});			
+							errors: [
+								{
+									msg: 'already verified',
+									param: 'token',
+									value: token
+								}
+							] 
+						});  		
 					}
 				}).catch(err => {
 					next(err);

@@ -42,13 +42,11 @@ const register = function(req, res, next){
 					password: req.body.password,
 					email: req.body.email
 				}).then(user => {
-					// email confirmation
 					sendConfirmation(user).then(res => {
-					  console.log(res)
+					  
 					}).catch(err => {
-					  console.log(err)
+					  next(err)
 					});
-					// 
 
 					const token = generateToken({ id: user._id });
 					res.status(201);
@@ -145,10 +143,32 @@ const forgotPassword = function(req, res, next){
 
 };
 
-const resetPassword = function(req, res, next){
-
+const confirmation = function(req, res, next){
+	User.findById(req.decoded.id).then(user => {
+		if (user){
+			sendConfirmation(user).then(response => {
+				res.status(200);
+				res.json({
+					status: 200,
+					success: true, 
+					msg: response
+				});				
+			}).catch(err => {
+				next(err)
+			});
+		} else {
+			res.status(404);
+			res.json({
+				status: 404,
+				success: false, 
+				user: null
+			});	
+		}
+	}).catch(err => {
+		next(err);
+	});
 };
 
-export { register, login };
+export { register, login, confirmation };
 
 
