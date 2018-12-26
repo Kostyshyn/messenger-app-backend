@@ -33,7 +33,7 @@ var ip = require('ip');
 var helper = require('../helpers/');
 var cluster =  require('cluster');
 
-helper.checkDir('../storage');
+helper.checkDir(path.resolve(__dirname, '../../storage'));
 
 /**
  * Get port from environment and store in Express.

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt-nodejs';
 import { User } from '@models/User';
 import { isValidPassword, generateToken } from '@helpers';
 import { validationResult } from 'express-validator/check';
+import { sendConfirmation } from '@mailer';
 
 const register = function(req, res, next){
 	const e = validationResult(req);
@@ -41,6 +42,14 @@ const register = function(req, res, next){
 					password: req.body.password,
 					email: req.body.email
 				}).then(user => {
+					// email confirmation
+					sendConfirmation(user).then(res => {
+					  console.log(res)
+					}).catch(err => {
+					  console.log(err)
+					});
+					// 
+
 					const token = generateToken({ id: user._id });
 					res.status(201);
 					res.json({
@@ -130,10 +139,6 @@ const login = function(req, res, next){
 			});			
 		}
 	});
-};
-
-const verification = function(req, res, next){
-
 };
 
 const forgotPassword = function(req, res, next){

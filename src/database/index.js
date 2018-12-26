@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import colors from 'colors';
 import empty from 'empty-folder';
+import path from 'path';
 import { User } from '../models/User';
 mongoose.Promise = Promise;
 
@@ -47,7 +48,8 @@ class DataBase {
 	drop(cb){
 		if (this._connection && process.env.MODE !== 'production'){
 			this._connection.db.dropDatabase(() => {
-				empty('../storage', false, (err) => {
+
+				empty(path.resolve(__dirname, '../../storage'), false, (err) => {
 					if (typeof cb == 'function'){
 						cb();
 					}
@@ -63,12 +65,14 @@ class DataBase {
 					username: 'admin',
 					email: 'admin@admin.com',
 					password: 'admin_admin',
-					role: process.env.PRIVATE_ACCESS_ADMIN
+					role: process.env.PRIVATE_ACCESS_ADMIN,
+					verified: true
 				}),
 				new User({
 					username: 'root',
 					email: 'root@root.com',
-					password: 'root_root'					
+					password: 'root_root',
+					verified: true					
 				})
 			];
 

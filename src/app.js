@@ -13,9 +13,7 @@ import redis from '@redis';
 import events from '@events';
 import { protectedRoute } from '@helpers';
 
-// send();
-
-import { api } from '@routes';
+import { router } from '@routes';
 
 const app = express();
 
@@ -39,7 +37,7 @@ app.use('/storage', protectedRoute, express.static(path.join(__dirname, 'storage
 
 app.use(cors()); // CORS
 
-app.use('/', api);
+app.use('/', router);
 
 // catch 404 and forward to error handler
 app.use((req, res) => {

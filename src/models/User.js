@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+import jwt from 'jsonwebtoken';
 mongoose.Promise = Promise;
 
 const Schema = mongoose.Schema;
@@ -56,6 +57,13 @@ const userSchema = mongoose.Schema({
   	timestamps: true
 });
 
+const generateConfirmationToken = function(payload){
+	const token = jwt.sign(payload, process.env.SECRET_CONFIRMATION_KEY, {
+			expiresIn: parseInt(process.env.EXPIRES_CONFIRMATION_TOKEN) 
+		});
+	return token;
+};
+
 userSchema.pre('save', function(next){
 	const user = this;
 
@@ -63,6 +71,7 @@ userSchema.pre('save', function(next){
 
 		const hash = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null);
 		user.password = hash;
+		user.verification_token = generateConfirmationToken({ email: user.email });
 		user.href = user.username.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}|=\-_`~()]/g,"").replace(/\s/g, '-');
 		next(null, user);
 		

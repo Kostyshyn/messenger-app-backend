@@ -1,5 +1,9 @@
 import nodemailer from 'nodemailer';
 import Events from '@events';
+import ejs from 'ejs';
+import fs from 'fs';
+import path from 'path';
+import jwt from 'jsonwebtoken';
 
 const transporter = nodemailer.createTransport({
 	service: process.env.MAILER,
@@ -9,21 +13,34 @@ const transporter = nodemailer.createTransport({
 	}
 });
 
-var mailOptions = {
-  from: process.env.MAILER_ACCOUNT,
-  to: 'kostyshyn.a.work@gmail.com',
-  subject: 'Sending Email using Node.js',
-  text: 'That was easy!'
+const sendConfirmation =  function(user){
+	return new Promise((resolve, reject) => {
+
+		ejs.renderFile(path.resolve(__dirname, '../views/mails/verification.ejs'), {
+			username: user.username,
+			token: 'http://192.168.0.113:8889/account/confirmation?token=' + user.verification_token
+		}, (err, data) => {
+			if (err){
+				reject(err);
+			} else {
+
+				const mailOptions = {
+				  from: process.env.MAILER_ACCOUNT,
+				  to: user.email,
+				  subject: 'Confirmation',
+				  html: data
+				};
+
+				transporter.sendMail(mailOptions, function(err, info){
+				  	if (err) {
+				    	reject(err);
+				  	} else {
+				    	resolve(info.response);
+				  	}
+				});				
+			}
+		});		
+	});
 };
 
-const send = function(){
-	transporter.sendMail(mailOptions, function(error, info){
-	  if (error) {
-	    console.log('Send error', error);
-	  } else {
-	    console.log('Email sent: ' + info.response);
-	  }
-	});
-}
-
-export { send }
+export { sendConfirmation }
