@@ -16,9 +16,9 @@ class DataBase {
 			const self = this;
 			mongoose.connect(process.env.DB_HOST + url).then(res => {
 				self._connection = res.connection;
-		 		if (process.env.MODE === 'development'){
+		 		if (process.env.NODE_ENV === 'development'){
 					self.drop(() => {
-						if (process.env.MODE !== 'test'){
+						if (process.env.NODE_ENV !== 'test'){
 							self.seed();
 							console.log('DataBase successfully connected to:'.green, 
 								process.env.DB_DATABASE, 
@@ -38,7 +38,7 @@ class DataBase {
 		 		}				
 
 			}).catch(err => {
-		 		if (process.env.MODE === 'development'){
+		 		if (process.env.NODE_ENV === 'development'){
 		 			console.log(colors.red('DataBase connection error:', err.message));
 		 		}
 			});			
@@ -46,7 +46,7 @@ class DataBase {
 	}
 
 	drop(cb){
-		if (this._connection && process.env.MODE !== 'production'){
+		if (this._connection && process.env.NODE_ENV !== 'production'){
 			this._connection.db.dropDatabase(() => {
 
 				empty(path.resolve(__dirname, '../../storage'), false, (err) => {
@@ -59,7 +59,7 @@ class DataBase {
 	}
 
 	seed(cb){
-		if (this._connection && process.env.MODE !== 'production'){
+		if (this._connection && process.env.NODE_ENV !== 'production'){
 			const seeds = [
 				new User({
 					username: 'admin',

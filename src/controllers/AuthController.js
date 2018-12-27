@@ -145,7 +145,7 @@ const forgotPassword = function(req, res, next){
 
 const confirmation = function(req, res, next){
 	User.findById(req.decoded.id).then(user => {
-		if (user){
+		if (user && user.verified == false){
 			sendConfirmation(user).then(response => {
 				res.status(200);
 				res.json({

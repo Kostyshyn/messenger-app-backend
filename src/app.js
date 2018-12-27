@@ -61,10 +61,10 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = process.env.MODE === 'development' ? err : {};
+  res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
   res.status(err.status || 500);
   // res.render('error');
-  console.log(err, process.env.MODE === 'development')
+  console.log(err, process.env.NODE_ENV === 'development')
   res.json({
     error: 'Internal Server Error'
   });

@@ -46,7 +46,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-if (process.env.MODE === 'development'){
+if (process.env.NODE_ENV === 'development'){
   var server = http.createServer(app);
   var io = socketIo.listen(server);
   require('../socket')(io, null);

@@ -17,7 +17,7 @@ class Redis {
 			});
 
 			this._connection.on('error', err => {
-		 		if (process.env.MODE === 'development'){
+		 		if (process.env.NODE_ENV === 'development'){
 		 			console.log(colors.red('Redis connection error:'.red, err.message));
 		 		}
 			});

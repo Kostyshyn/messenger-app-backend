@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec babel-node ./src/bin/www.js",
+    "dev": "NODE_ENV=development nodemon --exec babel-node ./src/bin/www.js",
     "build": "babel src -d dist",
-    "serve": "node ./dist/bin/www.js",
+    "serve": "NODE_ENV=production node ./dist/bin/www.js",
     "test": "mocha --timeout 15000 --require babel-register --reporter spec || exit 0"
   },
   "dependencies": {
