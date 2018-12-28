@@ -20,7 +20,8 @@ moduleAlias.addAliases({
   "@redis": path.resolve(__dirname, "../redis"),
   "@events": path.resolve(__dirname, "../events"),
   "@mailer": path.resolve(__dirname, "../mailer"),
-  "@views": path.resolve(__dirname, "../views")
+  "@views": path.resolve(__dirname, "../views"),
+  "@socket": path.resolve(__dirname, "../socket")
 });
 
 var app = require('../app');
@@ -46,10 +47,12 @@ app.set('port', port);
  * Create HTTP server.
  */
 
+import { socketConnection } from '../socket';
+
 if (process.env.NODE_ENV === 'development'){
   var server = http.createServer(app);
   var io = socketIo.listen(server);
-  require('../socket')(io, null);
+  socketConnection(io, null);
 
   /**
    * Listen on provided port, on all network interfaces.

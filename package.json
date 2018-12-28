@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec babel-node ./src/bin/www.js",
+    "dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/bin/www.js",
     "build": "babel src -d dist",
-    "serve": "NODE_ENV=production node ./dist/bin/www.js",
+    "serve": "cross-env NODE_ENV=production node ./dist/bin/www.js",
     "test": "mocha --timeout 15000 --require babel-register --reporter spec || exit 0"
   },
   "dependencies": {
@@ -45,6 +45,7 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "cross-env": "^5.2.0",
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
     "request": "^2.88.0"

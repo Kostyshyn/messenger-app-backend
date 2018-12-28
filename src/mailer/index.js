@@ -18,7 +18,7 @@ const sendConfirmation =  function(user){
 
 		ejs.renderFile(path.resolve(__dirname, '../views/mails/verification.ejs'), {
 			username: user.username,
-			token: 'http://192.168.0.113:8889/account/confirmation?token=' + user.verification_token
+			token: 'http://192.168.56.1:8889/account/confirmation?token=' + user.verification_token
 		}, (err, data) => {
 			if (err){
 				reject(err);

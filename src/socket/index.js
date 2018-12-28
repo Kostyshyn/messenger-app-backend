@@ -1,7 +1,9 @@
-module.exports = function(io, handler){
+const socketConnection =  function(io, handler){
 
-	io.on('connection', function(socket){
+	io.on('connection', socket => {
   		console.log('a user connected');	
 	});
 
 };
+
+export { socketConnection };
