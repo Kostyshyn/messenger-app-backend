@@ -14,6 +14,7 @@ class Redis {
 			    console.log('Redis client connected to:'.green, 
 			    	`${ process.env.REDIS_HOST }:${ process.env.REDIS_PORT }`,
 			    	'--- process: ' + process.pid);
+			    	this.test();
 			});
 
 			this._connection.on('error', err => {
@@ -22,6 +23,14 @@ class Redis {
 		 		}
 			});
 		}	
+	}
+
+	test(){
+		// const sockets = [1231234, 2342134, 2354235, 4564576];
+		// this._connection.sadd.apply(this._connection, ['myset'].concat(sockets));
+		// this._connection.get('myset', set => {
+		// 	console.log(set)
+		// });
 	}
 };
 
