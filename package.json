@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/bin/www.js",
-    "build": "babel src -d dist",
+    "build": "babel src -d dist && cp -r ./src/public/ ./dist/public ",
     "serve": "cross-env NODE_ENV=production node ./dist/bin/www.js",
     "test": "mocha --timeout 15000 --require babel-register --reporter spec || exit 0"
   },
@@ -16,6 +16,7 @@
     "compression": "^1.7.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
+    "cpx": "^1.5.0",
     "debug": "~2.6.9",
     "dotenv": "^6.0.0",
     "ejs": "~2.5.7",
