@@ -24,52 +24,61 @@ const register = function(req, res, next){
 			next(err);
 		} else if (user){
 			const errors = [];
+			if (user.username === req.body.username){
 				errors.push({
 					location: 'body',
-					param: 'email, username',
-					value: '',
-					msg: 'User is already exists'
-				});
-				res.status(403);
-				res.json({
-					status: 403,
-					success: false,
-					errors: errors
+					param: 'username',
+					value: req.body.username,
+					msg: 'A user with this username already exists'
 				});
 			} else {
-				User.create({
-					username: req.body.username,
-					password: req.body.password,
-					email: req.body.email
-				}).then(user => {
-					sendConfirmation(user).then(res => {
-					  
-					}).catch(err => {
-					  next(err)
-					});
-
-					const token = generateToken({ id: user._id });
-					res.status(201);
-					res.json({
-						status: 201,
-						success: true, 
-						user: {
-							username: user.username,
-							email: user.email,
-							href: user.href,
-							profile_img: user.profile_img,
-							role: user.role,
-							id: user._id,
-							updated: user.updatedAt,
-							created: user.createdAt	
-						},
-						token: token
-					});
-				}).catch(err => {
-					next(err);			
+				errors.push({
+					location: 'body',
+					param: 'email',
+					value: req.body.email,
+					msg: 'A user with this email already exists'
 				});
 			}
-		});
+			res.status(403);
+			res.json({
+				status: 403,
+				success: false,
+				errors: errors
+			});
+		} else {
+			User.create({
+				username: req.body.username,
+				password: req.body.password,
+				email: req.body.email
+			}).then(user => {
+				sendConfirmation(user).then(res => {
+
+				}).catch(err => {
+					next(err)
+				});
+
+				const token = generateToken({ id: user._id });
+				res.status(201);
+				res.json({
+					status: 201,
+					success: true, 
+					user: {
+						username: user.username,
+						email: user.email,
+						href: user.href,
+						profile_img: user.profile_img,
+						role: user.role,
+						id: user._id,
+						updated: user.updatedAt,
+						created: user.createdAt	
+					},
+					token: token
+				});
+			}).catch(err => {
+				next(err);			
+			});
+		}
+	});
 };
 
 const login = function(req, res, next){

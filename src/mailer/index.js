@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 	}
 });
 
-const sendConfirmation =  function(user){
+const sendConfirmation = function(user){
 	return new Promise((resolve, reject) => {
 
 		ejs.renderFile(path.resolve(__dirname, '../views/mails/verification.ejs'), {
