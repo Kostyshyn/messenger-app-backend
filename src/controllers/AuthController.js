@@ -104,7 +104,7 @@ const login = function(req, res, next){
 				location: 'body',
 				param: 'username',
 				value: req.body.username,
-				msg: 'user not found'
+				msg: 'User with this name is not found'
 			});
 			res.status(403);
 			res.json({
@@ -118,7 +118,7 @@ const login = function(req, res, next){
 				location: 'body',
 				param: 'password',
 				value: '',
-				msg: 'invalid password'
+				msg: 'Incorrect password'
 			});
 			res.status(403);
 			res.json({
