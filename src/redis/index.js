@@ -14,10 +14,6 @@ class Redis {
 			    console.log('Redis client connected to:'.green, 
 			    	`${ process.env.REDIS_HOST }:${ process.env.REDIS_PORT }`,
 			    	'--- process: ' + process.pid);
-
-			    // setTimeout(() => {
-			    // 	this.test();
-			    // }, 1000);
 			});
 
 			this._connection.on('error', err => {
@@ -26,21 +22,6 @@ class Redis {
 		 		}
 			});
 		}	
-	}
-
-	test(){
-
-		const clients = {
-			'test_client1': ['test1', 'test2'],
-			'test_client2': ['test1', 'test2', 'test3']
-		};
-
-		this._connection.hmset('clients', clients);
-
-		this._connection.hgetall('clients', function(err, object) {
-		    console.log(object);
-		});
-
 	}
 };
 
