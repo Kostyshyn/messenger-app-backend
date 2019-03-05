@@ -117,7 +117,7 @@ const login = function(req, res, next){
 			errors.push({
 				location: 'body',
 				param: 'password',
-				value: '',
+				value: req.body.password,
 				msg: 'Incorrect password'
 			});
 			res.status(403);
